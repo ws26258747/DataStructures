@@ -31,6 +31,11 @@ public class HuffmanCodeTest {
 		return b;
 	}
 
+	/**Using code map to compress the byte[]
+	 * @param bytes
+	 * @param huffmanCodes
+	 * @return
+	 */
 	private static byte[] zip(byte[] bytes, Map<Byte, String> huffmanCodes) {
 		StringBuilder sBuilder = new StringBuilder();
 		for(byte b:bytes) {
@@ -59,9 +64,15 @@ public class HuffmanCodeTest {
 		return by;
 	}
 	
+	//Local variable to store code entry
 	static StringBuilder sb =new StringBuilder();
+	//Local variable to shore code map
 	static Map<Byte, String> huffCodes = new HashMap<Byte, String>();
 	
+	/**Generate codes map
+	 * @param tree
+	 * @return
+	 */
 	private static Map<Byte, String> getCodes(HuffmanNode tree) {
 		if (tree==null) {
 			return null;
@@ -71,6 +82,11 @@ public class HuffmanCodeTest {
 		return huffCodes;
 	}
 
+	/** Generate codes map
+	 * @param node
+	 * @param code
+	 * @param sb
+	 */
 	private static void getCodes(HuffmanNode node, String code, StringBuilder sb) {
 		StringBuilder sb2 = new StringBuilder(sb);
 		sb2.append(code);
