@@ -1,19 +1,16 @@
 package huffman;
 
+import java.io.*;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-
-import tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class HuffmanCodeTest {
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		String msg = "can you can a can as a can canner can a can";
 		byte[] bytes = msg.getBytes();
 		System.out.println(Arrays.toString(bytes));
@@ -22,6 +19,31 @@ public class HuffmanCodeTest {
 		byte[] newbyte = decode(huffCodes,b);
 		System.out.println(Arrays.toString(newbyte));
 		System.out.println(new String(newbyte));
+
+		//压缩文件
+		String src = "1.bmp";
+		String dst = "2.zip";
+		try{
+			zipFile(src,dst);
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	private static void zipFile(String src, String dst) throws IOException{
+		InputStream is =new FileInputStream(src);
+		byte[] b = new byte[is.available()];
+		is.read(b);
+		is.close();
+		byte[] byteZip=huffmanZip(b);
+		OutputStream os = new FileOutputStream(dst);
+		ObjectOutputStream oos = new ObjectOutputStream(os);
+		oos.writeObject(byteZip);
+		oos.writeObject(huffCodes);
+		oos.close();
+		os.close();
+		System.out.println(b);
+		System.out.println(byteZip);
 	}
 
 	private static byte[] decode(Map<Byte, String> huffCodes, byte[] bytes) {
@@ -83,8 +105,7 @@ public class HuffmanCodeTest {
 		//创建一个赫夫曼编码表
 		Map<Byte, String> huffmanCodes = getCodes(tree);
 //		System.out.println(huffmanCodes);
-		byte[] b = zip(bytes,huffmanCodes);
-		return b;
+		return zip(bytes,huffmanCodes);
 	}
 
 	/**Using code map to compress the byte[]
