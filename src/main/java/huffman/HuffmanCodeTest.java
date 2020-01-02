@@ -16,9 +16,65 @@ public class HuffmanCodeTest {
 	public static void main(String[] args) {
 		String msg = "can you can a can as a can canner can a can";
 		byte[] bytes = msg.getBytes();
-		//System.out.println(Arrays.toString(bytes));
+		System.out.println(Arrays.toString(bytes));
 		byte[] b = huffmanZip(bytes);
 		System.out.println(Arrays.toString(b));
+		byte[] newbyte = decode(huffCodes,b);
+		System.out.println(Arrays.toString(newbyte));
+		System.out.println(new String(newbyte));
+	}
+
+	private static byte[] decode(Map<Byte, String> huffCodes, byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+		//把byte数组转化为一个二进制的字符串
+		for (int i =0;i<bytes.length;i++){
+			byte b = bytes[i];
+			//是否为最后一个字节
+			boolean flag = (i==bytes.length-1);
+			sb.append(byteToBitStr(!flag,b));
+		}
+//		System.out.println(sb);
+		//把编码的键值进行调换
+		Map<String,Byte> map = new HashMap<String, Byte>();
+		for(Map.Entry<Byte,String> entry:huffCodes.entrySet() ){
+			map.put(entry.getValue(),entry.getKey());
+		}
+		List<Byte> list =new ArrayList<Byte>();
+		for(int i =0;i<sb.length();){
+			int count=1;
+			boolean flag = true;
+			Byte b = null;
+			while (flag){
+				String s = sb.substring(i,i+count);
+				b = map.get(s);
+				if(b==null){
+					count++;
+				}else {
+					flag=false;
+				}
+			}
+			list.add(b);
+			i+=count;
+		}
+		byte[] b = new byte[list.size()];
+		for (int i=0;i<b.length;i++){
+			b[i] = list.get(i);
+		}
+		return b;
+	}
+
+	private static String byteToBitStr(boolean flag,byte b) {
+		int tmp = b;
+		if (flag){
+			tmp |=256;
+		}
+		String str =  Integer.toBinaryString(tmp);
+		if (flag){
+			return str.substring(str.length()-8);
+		}else {
+			return str;
+		}
+//		System.out.println(str);
 	}
 
 	private static byte[] huffmanZip(byte[] bytes) {
@@ -26,7 +82,7 @@ public class HuffmanCodeTest {
 		HuffmanNode tree = createHuffmanTress(nodes);
 		//创建一个赫夫曼编码表
 		Map<Byte, String> huffmanCodes = getCodes(tree);
-		System.out.println(huffmanCodes);
+//		System.out.println(huffmanCodes);
 		byte[] b = zip(bytes,huffmanCodes);
 		return b;
 	}
@@ -56,7 +112,7 @@ public class HuffmanCodeTest {
 			}else {
 				strByte = sBuilder.substring(i, i+8);								
 			}
-			//System.out.println(strByte);
+//			System.out.println(strByte);
 			byte byt = (byte)Integer.parseInt(strByte, 2);
 			by[index] = byt;
 			index++;
